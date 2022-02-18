@@ -33,7 +33,8 @@
                     + ';expires=' + date.toUTCString()
                     + ';domain=' + COOKIE_DOMAIN
                     + ';path=/{{ config('session.secure') ? ';secure' : null }}'
-                    + '{{ config('session.same_site') ? ';samesite='.config('session.same_site') : null }}';
+                    + '{{ config('session.same_site') ? ';SameSite='.config('session.same_site') : null }}'
+                    + '{{ config('session.http_only') ? ';HttpOnly' : null }}';
             }
 
             if (cookieExists('{{ $cookieConsentConfig['cookie_name'] }}')) {

@@ -73,6 +73,34 @@ class CookieConsentMiddlewareTest extends TestCase
     }
 
     /** @test */
+    public function the_cookie_httponly_attribute_is_not_set_if_config_session_is_set_to_false()
+    {
+        config(['session.http_only' => false]);
+
+        $middleware = new CookieConsentMiddleware();
+
+        $result = $middleware->handle(new Request(), function () {
+            return (new Response())->setContent('<html><head></head><body></body></html>');
+        });
+
+        $this->assertStringNotContainsString(';HttpOnly\'', $result->getContent());
+    }
+
+    /** @test */
+    public function the_cookie_httponly_attribute_is_not_set_if_config_session_is_set_to_true()
+    {
+        config(['session.http_only' => true]);
+
+        $middleware = new CookieConsentMiddleware();
+
+        $result = $middleware->handle(new Request(), function () {
+            return (new Response())->setContent('<html><head></head><body></body></html>');
+        });
+
+        $this->assertStringContainsString(';HttpOnly\'', $result->getContent());
+    }
+
+    /** @test */
     public function the_cookie_domain_is_set_by_the_session_domain_config_variable()
     {
         config(['session.domain' => 'some domain']);
@@ -97,7 +125,7 @@ class CookieConsentMiddlewareTest extends TestCase
             return (new Response())->setContent('<html><head></head><body></body></html>');
         });
 
-        $this->assertStringNotContainsString(';samesite=', $result->getContent());
+        $this->assertStringNotContainsString(';SameSite=', $result->getContent());
     }
 
     /** @test */
@@ -111,7 +139,7 @@ class CookieConsentMiddlewareTest extends TestCase
             return (new Response())->setContent('<html><head></head><body></body></html>');
         });
 
-        $this->assertStringContainsString(';samesite=strict', $result->getContent());
+        $this->assertStringContainsString(';SameSite=strict', $result->getContent());
     }
 
     /** @test */
